@@ -36,7 +36,7 @@ int main(void) {
 
   if (bmp_status == BMP_SUCCESS) {
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img00->width, img00->height, 0,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img00->width, img00->height, 0,
                  GL_BGRA, GL_UNSIGNED_BYTE, img00->data);
     glGenerateMipmap(GL_TEXTURE_2D);
     BMP_destroy(img00);
@@ -54,7 +54,7 @@ int main(void) {
 
   GLuint texture01;
   glGenTextures(1, &texture01);
-  glActiveTexture(GL_TEXTURE2);
+  glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, texture01);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -63,7 +63,7 @@ int main(void) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   if (bmp01_status == BMP_SUCCESS) {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, img01->width, img01->height, 0,
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img01->width, img01->height, 0,
                  GL_BGRA, GL_UNSIGNED_BYTE, img01->data);
     glGenerateMipmap(GL_TEXTURE_2D);
     BMP_destroy(img01);
@@ -93,6 +93,9 @@ int main(void) {
 
   Mesh *mesh =
       Mesh_new(vertices, indices, vertexCount, indexCount, perVertexValueCount);
+  Shader_setInt(shader, "ourTexture00", 0);
+  Shader_setInt(shader, "ourTexture01", 1);
+
   while (!Window_shouldClose(window)) {
     Window_handleEvents(window);
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -101,11 +104,13 @@ int main(void) {
     // Textures to Use
 
     Shader_use(shader);
-    Shader_setInt(shader, "ourTexture00", 0);
-    Shader_setInt(shader, "ourTexture01", 1);
 
+    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture00);
+
+    glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture01);
+
     Mesh_draw(mesh, 0);
   }
 
