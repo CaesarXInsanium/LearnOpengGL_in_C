@@ -1,0 +1,3 @@
+[submodule "BMPGL"]
+	path = BMPGL
+	url = ./BMPGL
