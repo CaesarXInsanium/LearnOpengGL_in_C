@@ -2,6 +2,7 @@
 #include "shader.h"
 #include "window.h"
 #include <BMP/bmp.h>
+#include <GL/gl.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
@@ -25,10 +26,10 @@ int main(void) {
   /// Generate number of textures and pass array of IDs
   glGenTextures(1, &texture00);
   // texture units are defined from 0 to 15
-  glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture00);
 
   /// Texture Options
+  // glActiveTexture(GL_TEXTURE0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -54,7 +55,7 @@ int main(void) {
 
   GLuint texture01;
   glGenTextures(1, &texture01);
-  glActiveTexture(GL_TEXTURE1);
+  // glActiveTexture(GL_TEXTURE1);
   glBindTexture(GL_TEXTURE_2D, texture01);
 
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -64,7 +65,7 @@ int main(void) {
 
   if (bmp01_status == BMP_SUCCESS) {
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img01->width, img01->height, 0,
-                 GL_BGRA, GL_UNSIGNED_BYTE, img01->data);
+                 GL_BGR, GL_UNSIGNED_BYTE, img01->data);
     glGenerateMipmap(GL_TEXTURE_2D);
     BMP_destroy(img01);
   } else {
@@ -78,7 +79,7 @@ int main(void) {
   Shader *shader = Shader_new("shaders/vertex.glsl", "shaders/frag.glsl");
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
-  GLfloat vertices[] = {
+  float vertices[] = {
       // positions          // colors           // texture coords
       0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
       0.5f,  -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
@@ -93,23 +94,22 @@ int main(void) {
 
   Mesh *mesh =
       Mesh_new(vertices, indices, vertexCount, indexCount, perVertexValueCount);
+
   Shader_setInt(shader, "ourTexture00", 0);
   Shader_setInt(shader, "ourTexture01", 1);
 
   while (!Window_shouldClose(window)) {
     Window_handleEvents(window);
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Textures to Use
-
-    Shader_use(shader);
 
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture00);
 
-    glActiveTexture(GL_TEXTURE1);
+    // glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, texture01);
+
+    Shader_use(shader);
 
     Mesh_draw(mesh, 0);
   }
