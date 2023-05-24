@@ -17,29 +17,23 @@ SRC = [
   'src/window.c',
   'src/shader.c',
   'src/mesh.c',
+  'src/texture.c',
 ]
 
 INC = [
-include_directories('include'),
-include_directories('BMPGL')
+  include_directories('include'),
 ]
 
 DEPS = [
     dependency('glew'),
     dependency('glfw3'),
     dependency('cglm'),
-
+    dependency('libpng'),
 ]
-BMPGL = library(
-  'bpm',
-  ['BMPGL/src/bmp.c'],
-  include_directories: INC,
-)
 executable(
           'learn-gl',
           SRC, 
           install : true,
           include_directories: INC,
           dependencies: DEPS,
-          link_with: BMPGL
 )

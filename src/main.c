@@ -1,7 +1,7 @@
 #include "mesh.h"
 #include "shader.h"
+#include "texture.h"
 #include "window.h"
-#include <BMP/bmp.h>
 #include <GL/gl.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -15,64 +15,10 @@ int main(void) {
     puts("Failed to Load OpenGL Context");
     return EXIT_FAILURE;
   }
-  // Load Image Data using my Library
-  BMP *img00 = NULL;
-  BMP_init(&img00);
-  int bmp_status = BMP_load_from_path(&img00, "images/minecraft_dirt.bmp");
-  BMP_fexplain_err(stderr, bmp_status);
-
-  // Upload to OpenGL
-  GLuint texture00;
-  /// Generate number of textures and pass array of IDs
-  glGenTextures(1, &texture00);
-  // texture units are defined from 0 to 15
-  glBindTexture(GL_TEXTURE_2D, texture00);
-
-  /// Texture Options
-  // glActiveTexture(GL_TEXTURE0);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  if (bmp_status == BMP_SUCCESS) {
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img00->width, img00->height, 0,
-                 GL_BGRA, GL_UNSIGNED_BYTE, img00->data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    BMP_destroy(img00);
-  } else {
-    fprintf(stderr, "Failed to load texture!\n");
-    BMP_destroy(img00);
-    return EXIT_FAILURE;
-  }
-
-  // Second texture
-  BMP *img01 = NULL;
-  BMP_init(&img01);
-  int bmp01_status = BMP_load_from_path(&img01, "images/alterjoan.bmp");
-  BMP_fexplain_err(stderr, bmp01_status);
-
-  GLuint texture01;
-  glGenTextures(1, &texture01);
-  // glActiveTexture(GL_TEXTURE1);
-  glBindTexture(GL_TEXTURE_2D, texture01);
-
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-  if (bmp01_status == BMP_SUCCESS) {
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, img01->width, img01->height, 0,
-                 GL_BGR, GL_UNSIGNED_BYTE, img01->data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-    BMP_destroy(img01);
-  } else {
-    fprintf(stderr, "Failed to Load Texture!\n");
-    BMP_destroy(img01);
-    return EXIT_FAILURE;
-  }
+  glActiveTexture(GL_TEXTURE0);
+  Texture alter_joan = newTexture("images/alterjoan.png", 0);
+  glActiveTexture(GL_TEXTURE1);
+  Texture rem = newTexture("images/rem.png", 0);
 
   // Destroy data from image
 
@@ -95,21 +41,20 @@ int main(void) {
   Mesh *mesh =
       Mesh_new(vertices, indices, vertexCount, indexCount, perVertexValueCount);
 
-  Shader_setInt(shader, "ourTexture00", 0);
-  Shader_setInt(shader, "ourTexture01", 1);
+   Shader_setInt(shader, "ourTexture00", 0);
+   Shader_setInt(shader, "ourTexture01", 1);
 
   while (!Window_shouldClose(window)) {
     Window_handleEvents(window);
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture00);
-
-    // glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture01);
-
     Shader_use(shader);
+    glActiveTexture(GL_TEXTURE0);
+    useTexture(alter_joan);
+
+    glActiveTexture(GL_TEXTURE1);
+    useTexture(rem);
 
     Mesh_draw(mesh, 0);
   }
