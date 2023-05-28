@@ -7,7 +7,7 @@ project(
     'werror=true',
     'buildtype=debug',
     'debug=true',
-    #'optimization=3',
+    'optimization=3',
     'c_std=c18'
   ]
 )

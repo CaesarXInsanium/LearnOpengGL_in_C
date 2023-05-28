@@ -1,4 +1,5 @@
 #include "shader.h"
+#include <cglm/mat4.h>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -19,10 +20,16 @@ int Shader_destroy(Shader *self) {
 
 void Shader_use(Shader *self) { glUseProgram(self->ID); }
 
-void Shader_setBool(Shader *self, const char *name, bool value);
-void Shader_setFloat(Shader *self, const char *name, GLfloat value);
+void Shader_setFloat(Shader *self, const char *name, GLfloat value) {
+  glUniform1f(glGetUniformLocation(self->ID, name), value);
+}
 void Shader_setInt(Shader *self, const char *name, GLint value) {
   glUniform1i(glGetUniformLocation(self->ID, name), value);
+}
+
+void Shader_setMat4f(Shader *self, const char *name, mat4 mat) {
+  glUniformMatrix4fv(glGetUniformLocation(self->ID, name), 1, GL_FALSE,
+                     (float *)mat);
 }
 
 char *loadSourceFile(const char *path) {

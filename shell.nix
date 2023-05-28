@@ -8,6 +8,7 @@ stdenv.mkDerivation {
     ninja
     glew
     glfw3
-    cglm
+    cglm	
+    libpng
     ];
 }
