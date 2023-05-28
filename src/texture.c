@@ -48,10 +48,12 @@ Texture newTexture(const char *filepath, GLuint index) {
   // Available PNG formats:
   switch (color_type) {
   case PNG_COLOR_TYPE_RGBA:
+    puts("RGBA");
     internalFormat = GL_RGBA;
     break;
 
   case PNG_COLOR_TYPE_RGB:
+    puts("RGB");
     internalFormat = GL_RGB;
     break;
   case PNG_COLOR_TYPE_GRAY:
@@ -76,14 +78,14 @@ Texture newTexture(const char *filepath, GLuint index) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                   GL_LINEAR_MIPMAP_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  // glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   // uv are not in [0,1] for some models, they assume uvs are repeated.
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  printf("Uploading %lu bytes to the GPU...", row_bytes * height);
+  printf("Uploading %lu bytes to the GPU...\n", row_bytes * height);
 
   glTexImage2D(GL_TEXTURE_2D,    // What (target)
                0,                // Mip-map level

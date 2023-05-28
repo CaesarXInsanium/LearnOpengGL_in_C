@@ -19,8 +19,8 @@ Window *newWindow(size_t w, size_t h, char *name) {
 
   glfwWindowHint(GLFW_REFRESH_RATE, 60);
   glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
 
   self->window_ptr = glfwCreateWindow(w, h, name, NULL, NULL);
   self->width = w;
