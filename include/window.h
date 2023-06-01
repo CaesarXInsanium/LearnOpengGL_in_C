@@ -1,6 +1,6 @@
 #ifndef WINDOW_H
 #define WINDOW_H
-#include <GL/glew.h>
+#include "glad/gl.h"
 #include <GLFW/glfw3.h>
 
 typedef struct Window_ {

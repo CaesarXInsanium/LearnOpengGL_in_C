@@ -1,6 +1,6 @@
 #include "shader.h"
 #include <cglm/mat4.h>
-#include <GL/glew.h>
+#include "glad/gl.h"
 #include <GLFW/glfw3.h>
 
 Shader *Shader_new(const char *vertexSource, const char *fragmentPath) {

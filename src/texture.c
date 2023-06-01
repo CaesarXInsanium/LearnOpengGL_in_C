@@ -1,6 +1,6 @@
 #include "texture.h"
 #include "stdio.h"
-#include <GL/glew.h>
+#include "glad/gl.h"
 #include <png.h>
 #include <stdlib.h>
 #include <string.h>
@@ -57,11 +57,11 @@ Texture newTexture(const char *filepath, GLuint index) {
     internalFormat = GL_RGB;
     break;
   case PNG_COLOR_TYPE_GRAY:
-    internalFormat = GL_LUMINANCE;
+    internalFormat = GL_LUMINANCE8_EXT;
     break;
 
   case PNG_COLOR_TYPE_GRAY_ALPHA:
-    internalFormat = GL_LUMINANCE_ALPHA;
+    internalFormat = GL_SLUMINANCE_ALPHA_EXT;
     break;
 
   default:

@@ -1,6 +1,6 @@
 #include <cglm/types.h>
 #ifndef VERTEX_H
-#include <GL/glew.h>
+#include "glad/gl.h"
 #include <cglm/vec3.h>
 #include <cglm/vec2.h>
 #define VERTEX_H

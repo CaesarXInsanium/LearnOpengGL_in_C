@@ -1,24 +1,21 @@
+#include "glad/gl.h"
 #include "mesh.h"
 #include "shader.h"
 #include "texture.h"
 #include "uniform.h"
 #include "window.h"
-#include <GL/gl.h>
-#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cglm/cglm.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(void) {
   Window *window = newWindow(900, 700, "GLEW!");
   focusWindow(window);
-  if (glewInit() != GLEW_OK) {
-    puts("Failed to Load OpenGL Context");
-    return EXIT_FAILURE;
-  }
+  gladLoadGL(glfwGetProcAddress);
 
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -51,15 +48,9 @@ int main(void) {
   Shader_use(shader); // but first declare that are using this shader
 
   mat4 trans;
-  glm_mat4_identity(trans);
-  vec3 axis = {0.0, 0.0, 1.0};
-  glm_rotate(trans, glm_radians(90.0), axis);
-  vec3 scale = {0.5, 0.5, 0.5};
-  glm_scale(trans, scale);
 
   Shader_setInt(shader, "ourTexture00", 0);
   Shader_setInt(shader, "ourTexture01", 1);
-  Shader_setMat4f(shader, "transform", trans);
 
   while (!Window_shouldClose(window)) {
     Window_handleEvents(window);
@@ -71,8 +62,16 @@ int main(void) {
 
     glActiveTexture(GL_TEXTURE1);
     useTexture(texture_02);
-    // glBindTextureUnit(0, texture_02.id);
-    // glBindTextureUnit(1, texture_01.id);
+
+    glm_mat4_identity(trans);
+    vec3 axis = {0.0, 0.0, 1.0};
+    double time = glfwGetTime();
+    printf("Radians time: %f\n", time);
+    float time_float = glm_radians((float) time);
+    glm_rotate(trans, time_float, axis);
+    vec3 scale = {0.5, 0.5, 0.5};
+    glm_scale(trans, scale);
+    Shader_setMat4f(shader, "transform", trans);
 
     Shader_use(shader);
 

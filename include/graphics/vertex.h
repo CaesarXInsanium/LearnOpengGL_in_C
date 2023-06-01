@@ -1,6 +1,6 @@
 #ifndef GRAPHICS_VERTEX_H
 #define GRAPHICS_VERTEX_H
-#include <GL/glew.h>
+#include "glad/gl.h"
 #include <GLFW/glfw3.h>
 
 // Describes How Data is Organized in Array Sent to Graphics Card
