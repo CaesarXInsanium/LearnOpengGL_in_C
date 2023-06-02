@@ -13,7 +13,7 @@
 #include <stdlib.h>
 
 int main(void) {
-  Window *window = newWindow(900, 700, "GLEW!");
+  Window *window = newWindow(800, 800, "GLAD!");
   focusWindow(window);
   gladLoadGL(glfwGetProcAddress);
 
@@ -65,12 +65,17 @@ int main(void) {
 
     glm_mat4_identity(trans);
     vec3 axis = {0.0, 0.0, 1.0};
-    double time = glfwGetTime();
+    double time = glfwGetTime() * 100.0;
     printf("Radians time: %f\n", time);
-    float time_float = glm_radians((float) time);
-    glm_rotate(trans, time_float, axis);
+
+    float time_float = glm_radians((float)time);
     vec3 scale = {0.5, 0.5, 0.5};
+    vec3 translation = { 0.5, -0.5, 0.0};
+
+    glm_translate(trans, translation);
+    glm_rotate(trans, time_float, axis);
     glm_scale(trans, scale);
+
     Shader_setMat4f(shader, "transform", trans);
 
     Shader_use(shader);

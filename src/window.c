@@ -22,7 +22,7 @@ Window *newWindow(size_t w, size_t h, char *name) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
-  self->window_ptr = glfwCreateWindow(w, h, name, NULL, NULL);
+  self->window_ptr = glfwCreateWindow((int)w, (int)h, name, NULL, NULL);
   self->width = w;
   self->height = h;
 
@@ -48,7 +48,7 @@ int Window_handleEvents(Window *self) {
   glfwPollEvents();
   return EXIT_SUCCESS;
 }
-int Window_shouldClose(Window *self){
+int Window_shouldClose(Window *self) {
   return glfwWindowShouldClose(self->window_ptr);
 }
 
