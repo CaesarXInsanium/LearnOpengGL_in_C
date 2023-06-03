@@ -1,77 +1,69 @@
-
 #include "mesh.h"
 #include "glad/gl.h"
+#include "vertex.h"
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 
-Mesh *Mesh_new(GLfloat *vertices, GLuint *indices, GLuint vertexCount,
-               GLuint indexCount, GLuint perVertexValueCount) {
-  Mesh *mesh = (Mesh *)malloc(sizeof(Mesh));
 
-  unsigned int VBO, EBO, VAO;
-  glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
-  glGenBuffers(1, &EBO);
+Mesh *Mesh_fromGeometry(Geometry *geo) {
+  Mesh *result = calloc(1, sizeof(Mesh));
 
-  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and
-  // then configure vertex attributes(s). This binding is remember as we do
-  // other things.
-  glBindVertexArray(VAO);
+  GLuint vbo, ebo, vao;
+  glGenVertexArrays(1, &vao);
+  glGenBuffers(1, &vbo);
+  glGenBuffers(1, &ebo);
 
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  // sets bufer type, size of entire array in bytes, pointer to array, and
-  // read/write permissions
-  glBufferData(GL_ARRAY_BUFFER,
-               sizeof(GLfloat) * vertexCount * perVertexValueCount, vertices,
-               GL_STATIC_DRAW);
+  glBindVertexArray(vao);
 
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices) * indexCount, indices,
-               GL_STATIC_DRAW);
+  glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
-  // do this after declaring the VBO and EBO
-  /// Vertex Data
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE,
-                        perVertexValueCount * sizeof(GLfloat), (void *)0);
-  glEnableVertexAttribArray(0);
-  // Color Data
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE,
-                        perVertexValueCount * sizeof(GLfloat),
-                        (void *)(3 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(1);
-  // Texture Data
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE,
-                        perVertexValueCount * sizeof(GLfloat),
-                        (void *)(6 * sizeof(GLfloat)));
-  glEnableVertexAttribArray(2);
-  // note that this is allowed, the call to glVertexAttribPointer registered VBO
-  // as the vertex attribute's bound vertex buffer object so afterwards we can
-  // safely unbind
+  glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * geo->vertex_count,
+               geo->vertices, GL_STATIC_DRAW);
+
+  // bind Element array buffer inside of VAO in order to link the two of them
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(GLuint) * geo->index_count,
+               geo->indices, GL_STATIC_DRAW);
+
+  // describe the vertex data
+  Vertex_describeVerticesSingleBuffer(vao);
   glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-  // You can unbind the VAO afterwards so other VAO calls won't accidentally
-  // modify this VAO, but this rarely happens. Modifying other VAOs requires a
-  // call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
-  // VBOs) when it's not directly necessary.
   glBindVertexArray(0);
 
-  mesh->VAO = VAO;
-  mesh->VBO = VBO;
-  mesh->EBO = EBO;
-  mesh->count = indexCount;
-  return mesh;
+  result->VAO = vao;
+  // this function assumes a single geometry
+  result->vertex_buffer_count = 1;
+  GLuint *vbos = calloc(result->vertex_buffer_count, sizeof(GLuint));
+  vbos[0] = vbo;
+
+  result->ebo = ebo;
+  result->index_count = geo->index_count;
+
+  result->instance_count = 1;
+  // unused value
+  result->instance_uniforms = NULL;
+
+  return result;
 }
-int Mesh_draw(Mesh *mesh, GLvoid *instances) {
+
+int Mesh_draw(Mesh *mesh) {
 
   glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's
                                 // no need to bind it every time, but we'll do
                                 // so to keep things a bit more organized
-  glDrawElements(GL_TRIANGLES, mesh->count, GL_UNSIGNED_INT, instances);
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ebo);
+  glDrawElements(GL_TRIANGLES, mesh->index_count, GL_UNSIGNED_INT, 0);
+  //glDrawArrays(GL_TRIANGLES, 0, 36);
   return 0;
 }
 int Mesh_destroy(Mesh *mesh) {
+  for(size_t i = 0; i < mesh->vertex_buffer_count; i++){
+    glDeleteBuffers(1, &mesh->vbos_array[i]);
+  }
+  free(mesh->vbos_array);
   glDeleteVertexArrays(1, &mesh->VAO);
-  glDeleteBuffers(1, &mesh->VBO);
+  glDeleteBuffers(1, &mesh->ebo);
+
   free(mesh);
   return 0;
 }

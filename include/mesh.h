@@ -1,17 +1,30 @@
 #ifndef MESH_H
 #define MESH_H
 #include "glad/gl.h"
+#include "vertex.h"
 #include <GLFW/glfw3.h>
 
-typedef struct Mesh_ {
-  GLuint VBO;
-  GLuint EBO;
+// This struct represents an individual thing that can be draw by my engine. A
+// model or a scene or a skybox or something. All the data has already been
+// uploaded to GPU
+typedef struct {
   GLuint VAO;
-  GLuint count;
+
+  // IDs are stored in a heap allocated buffer
+  size_t vertex_buffer_count;
+  GLuint *vbos_array;
+
+  GLuint ebo;
+  GLuint index_count;
+
+  size_t instance_count;
+  // heap allocated
+  void *instance_uniforms;
 } Mesh;
 
-Mesh *Mesh_new(GLfloat *vertices, GLuint *indices, GLuint vertexCount,GLuint indexCount, GLuint perVertexValueCount);
-int Mesh_draw(Mesh *mesh, GLvoid *instances);
+Mesh *Mesh_fromGeometry(Geometry *geo);
+
+int Mesh_draw(Mesh *mesh);
 int Mesh_destroy(Mesh *mesh);
 
 #endif

@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-static Window *current;
+static Window *current_focused_window;
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -38,7 +38,7 @@ int destroyWindow(Window *self) {
 }
 
 int focusWindow(Window *self) {
-  current = self;
+  current_focused_window = self;
   glfwMakeContextCurrent(self->window_ptr);
   return EXIT_SUCCESS;
 }
@@ -54,6 +54,8 @@ int Window_shouldClose(Window *self) {
 
 void framebuffer_size_callback(GLFWwindow *window, int width, int height) {
   printf("Window Framebuffer Size Callback:\t%p\n", (void *)window);
+  current_focused_window->width = width;
+  current_focused_window->height = height;
   glViewport(0, 0, width, height);
 }
 

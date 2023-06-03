@@ -19,6 +19,8 @@ SRC = [
   'src/mesh.c',
   'src/texture.c',
   'src/gl.c',
+  'src/vertex.c',
+  'src/gl.c',
 ]
 
 INC = [
