@@ -8,6 +8,7 @@
 #include <cglm/cglm.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
+#include <cglm/cam.h>
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -47,8 +48,6 @@ int main(void) {
   // begin declaring uniforms
   Shader_use(shader); // but first declare that are using this shader
 
-  mat4 trans;
-
   Shader_setInt(shader, "ourTexture00", 0);
   Shader_setInt(shader, "ourTexture01", 1);
 
@@ -63,20 +62,28 @@ int main(void) {
     glActiveTexture(GL_TEXTURE1);
     useTexture(texture_02);
 
-    glm_mat4_identity(trans);
-    vec3 axis = {0.0, 0.0, 1.0};
-    double time = glfwGetTime() * 100.0;
-    printf("Radians time: %f\n", time);
+    // model
+    mat4 model;
+    glm_mat4_identity(model);
+    vec3 model_axis = {1.0, 0.0, 0.0};
+    glm_rotate(model, glm_radians(-55.0), model_axis);
 
-    float time_float = glm_radians((float)time);
-    vec3 scale = {0.5, 0.5, 0.5};
-    vec3 translation = { 0.5, -0.5, 0.0};
+    // view
+    mat4 view;
+    glm_mat4_identity(view);
+    vec3 direction = {0.0, 0.0, -3.0};
+    glm_translate(view, direction);
 
-    glm_translate(trans, translation);
-    glm_rotate(trans, time_float, axis);
-    glm_scale(trans, scale);
+    // projection
+    mat4 projection;
+    glm_mat4_identity(projection);
+    float aspect_ratio = ((float)window->width / (float)window->height);
+    glm_perspective(glm_radians(45.0), aspect_ratio, 0.1, 100.0, projection);
 
-    Shader_setMat4f(shader, "transform", trans);
+    Shader_setMat4f(shader, "model", model);
+    Shader_setMat4f(shader, "view", view);
+    Shader_setMat4f(shader, "projection", projection);
+
 
     Shader_use(shader);
 
