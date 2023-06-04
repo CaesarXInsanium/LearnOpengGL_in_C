@@ -6,7 +6,6 @@ stdenv.mkDerivation {
     gcc
     meson
     ninja
-    glew
     glfw3
     cglm	
     libpng

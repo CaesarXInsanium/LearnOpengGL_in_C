@@ -34,25 +34,20 @@ Mesh *Mesh_fromGeometry(Geometry *geo) {
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
-  result->VAO = vao;
+  result->vao = vao;
   // this function assumes a single geometry
-  result->vertex_buffer_count = 1;
-  GLuint *vbos = calloc(result->vertex_buffer_count, sizeof(GLuint));
-  vbos[0] = vbo;
+  result->vertex_count = geo->vertex_count;
+  result->vbo = vbo;
 
   result->ebo = ebo;
   result->index_count = geo->index_count;
-
-  result->instance_count = 1;
-  // unused value
-  result->instance_uniforms = NULL;
 
   return result;
 }
 
 int Mesh_draw(Mesh *mesh) {
 
-  glBindVertexArray(mesh->VAO); // seeing as we only have a single VAO there's
+  glBindVertexArray(mesh->vao); // seeing as we only have a single VAO there's
                                 // no need to bind it every time, but we'll do
                                 // so to keep things a bit more organized
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->ebo);
@@ -61,12 +56,9 @@ int Mesh_draw(Mesh *mesh) {
   return 0;
 }
 int Mesh_destroy(Mesh *mesh) {
-  for(size_t i = 0; i < mesh->vertex_buffer_count; i++){
-    glDeleteBuffers(1, &mesh->vbos_array[i]);
-  }
-  free(mesh->vbos_array);
-  glDeleteVertexArrays(1, &mesh->VAO);
+  glDeleteBuffers(1, &mesh->vbo);
   glDeleteBuffers(1, &mesh->ebo);
+  glDeleteVertexArrays(1, &mesh->vao);
 
   free(mesh);
   return 0;

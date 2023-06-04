@@ -1,4 +1,5 @@
 #include "glad/gl.h"
+#include "graphics/geometry.h"
 #include "mesh.h"
 #include "shader.h"
 #include "texture.h"
@@ -29,10 +30,14 @@ int main(void) {
   char *frag_source = load_file_from_path("shaders/frag.glsl");
   Shader *shader = Shader_new(vertex_source, frag_source);
 
+  free(vertex_source);
+  free(frag_source);
+
   // set up vertex data (and buffer(s)) and configure vertex attributes
   Geometry *cube_geometry =
       Geometry_fromGLfloatArray(36, CUBE_VERTICES, 0, NULL);
   Mesh *mesh = Mesh_fromGeometry(cube_geometry);
+  Geometry_destroy(cube_geometry);
 
   // begin declaring uniforms
   Shader_use(shader); // but first declare that are using this shader
@@ -78,6 +83,11 @@ int main(void) {
 
     Mesh_draw(mesh);
   }
+
+  Mesh_destroy(mesh);
+  Shader_destroy(shader);
+  destroyWindow(window);
+
 
   return EXIT_SUCCESS;
 }

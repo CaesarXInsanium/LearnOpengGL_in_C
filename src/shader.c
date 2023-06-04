@@ -1,14 +1,16 @@
 #include "shader.h"
-#include <cglm/mat4.h>
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
+#include <assert.h>
+#include <cglm/mat4.h>
+#include <stdio.h>
 
 Shader *Shader_new(char *vertex_source, char *frag_source) {
   Shader *self = (Shader *)malloc(sizeof(Shader));
 
-  GLuint shaderProgram =
-      GLShaderProgram_fromChar(vertex_source, frag_source);
-  self->ID = shaderProgram;
+  GLuint shader_program =
+      shader_program_from_chararray(vertex_source, frag_source);
+  self->ID = shader_program;
   return self;
 }
 int Shader_destroy(Shader *self) {
@@ -61,45 +63,59 @@ char *load_file_from_path(const char *path) {
   return source;
 }
 
-GLuint GLShaderProgram_fromChar(const char *vertexShaderSource,
-                                const char *fragmentShaderSource) {
+GLuint shader_program_from_chararray(const char *vertex_source,
+                                     const char *frag_source) {
 
-  // build and compile our shader program
-  // ------------------------------------
-  // vertex shader
-  unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-  glCompileShader(vertexShader);
-  // check for shader compile errors
-  int success;
-  char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    printf("ERRO: Vertex Shader Compilation failed:\t%s\n", infoLog);
-  }
-  // fragment shader
-  unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-  glCompileShader(fragmentShader);
-  // check for shader compile errors
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    printf("ERRO: Fragment Shader Compilation failed:\t%s\n", infoLog);
-  }
+  GLuint vertex_shader_object =
+      compile_shader_object(vertex_source, GL_VERTEX_SHADER);
+  GLuint frag_shader_object =
+      compile_shader_object(frag_source, GL_FRAGMENT_SHADER);
+
   // link shaders
-  unsigned int shaderProgram = glCreateProgram();
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-  // check for linking errors
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+  GLuint objects[] = {vertex_shader_object, frag_shader_object};
+  GLuint shader_program = link_shader_program(objects, 2);
+
+  glDeleteShader(vertex_shader_object);
+  glDeleteShader(frag_shader_object);
+  return shader_program;
+}
+
+GLuint compile_shader_object(const char *source, GLenum shader_type) {
+  GLuint result_shader = glCreateShader(shader_type);
+  glShaderSource(result_shader, 1, &source, NULL);
+  glCompileShader(result_shader);
+
+  int success;
+  char info_log[512];
+
+  glGetShaderiv(result_shader, GL_COMPILE_STATUS, &success);
+
   if (!success) {
-    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    printf("ERRO: Shader Program linking failed:\t%s\n", infoLog);
+    glGetShaderInfoLog(result_shader, 512, NULL, info_log);
+    fprintf(stderr, "Error failed to compile shader with source: \n%s\n",
+            source);
   }
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
-  return shaderProgram;
+
+  return result_shader;
+}
+
+GLuint link_shader_program(GLuint *objects, GLuint count) {
+  GLuint shader_program = glCreateProgram();
+  for (GLuint i = 0; i < count; i++) {
+    GLuint shader_object = objects[i];
+    glAttachShader(shader_program, shader_object);
+  }
+
+  glLinkProgram(shader_program);
+
+  int success;
+  char info_log[512];
+
+  glGetProgramiv(shader_program, GL_LINK_STATUS, &success);
+
+  if (!success) {
+    glGetShaderInfoLog(shader_program, 512, NULL, info_log);
+    fprintf(stderr, "Error failed to link shader\n");
+  }
+  return shader_program;
 }

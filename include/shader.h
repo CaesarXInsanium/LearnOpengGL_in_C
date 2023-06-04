@@ -28,7 +28,10 @@ void Shader_setMat4f(Shader *self, const char *name, mat4 mat);
 // stolen from:
 // https://stackoverflow.com/questions/2029103/correct-way-to-read-a-text-file-into-a-buffer-in-c
 char *load_file_from_path(const char *path);
-GLuint GLShaderProgram_fromChar(const char *vertexShader,
-                                const char *fragmentShader);
+GLuint shader_program_from_chararray(const char *vertexShader,
+                                     const char *fragmentShader);
+
+GLuint compile_shader_object(const char *source, GLenum shader_type);
+GLuint link_shader_program(GLuint *objects, GLuint count);
 
 #endif

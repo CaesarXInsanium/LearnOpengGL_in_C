@@ -9,18 +9,14 @@
 // model or a scene or a skybox or something. All the data has already been
 // uploaded to GPU
 typedef struct {
-  GLuint VAO;
+  GLuint vao;
 
   // IDs are stored in a heap allocated buffer
-  size_t vertex_buffer_count;
-  GLuint *vbos_array;
+  size_t vertex_count;
+  GLuint vbo;
 
   GLuint ebo;
   GLuint index_count;
-
-  size_t instance_count;
-  // heap allocated
-  void *instance_uniforms;
 } Mesh;
 
 Mesh *Mesh_fromGeometry(Geometry *geo);
