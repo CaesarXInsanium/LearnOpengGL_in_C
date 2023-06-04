@@ -18,7 +18,6 @@ SRC = [
   'src/shader.c',
   'src/mesh.c',
   'src/texture.c',
-  'src/gl.c',
   'src/vertex.c',
   'src/gl.c',
   'src/graphics/vertex_entry.c',
