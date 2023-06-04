@@ -28,6 +28,8 @@ static const GLuint FLOATS_IN_VERTEX = 8;
 // will unbind vao
 void Vertex_describeVerticesSingleBuffer(GLuint vao);
 
+void Vertex_describe(GLuint vao, GLuint vbo);
+
 typedef struct {
   bool heap_allocated;
   GLuint vertex_count;

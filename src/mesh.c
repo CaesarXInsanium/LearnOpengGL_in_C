@@ -26,7 +26,9 @@ Mesh *Mesh_fromGeometry(Geometry *geo) {
                geo->indices, GL_STATIC_DRAW);
 
   // describe the vertex data
-  Vertex_describeVerticesSingleBuffer(vao);
+  // Vertex_describeVerticesSingleBuffer(vao);
+  Vertex_describe(vao, vbo);
+
   glBindBuffer(GL_ARRAY_BUFFER, 0);
   glBindVertexArray(0);
 
