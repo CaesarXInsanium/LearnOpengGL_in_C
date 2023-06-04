@@ -1,7 +1,8 @@
 #ifndef MESH_H
 #define MESH_H
 #include "glad/gl.h"
-#include "vertex.h"
+#include "graphics/geometry.h"
+#include "graphics/vertex.h"
 #include <GLFW/glfw3.h>
 
 // This struct represents an individual thing that can be draw by my engine. A

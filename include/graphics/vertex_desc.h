@@ -1,6 +1,6 @@
 #pragma once
 #include "glad/gl.h"
-#include "vertex.h"
+#include "graphics/vertex.h"
 #include <stddef.h>
 
 #define ADDR(value) ((void *)value)

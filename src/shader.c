@@ -3,12 +3,11 @@
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
 
-Shader *Shader_new(const char *vertexSource, const char *fragmentPath) {
+Shader *Shader_new(char *vertex_source, char *frag_source) {
   Shader *self = (Shader *)malloc(sizeof(Shader));
-  char *vertexShaderSource = loadSourceFile(vertexSource);
-  char *fragmentShaderSource = loadSourceFile(fragmentPath);
+
   GLuint shaderProgram =
-      GLShaderProgram_fromChar(vertexShaderSource, fragmentShaderSource);
+      GLShaderProgram_fromChar(vertex_source, frag_source);
   self->ID = shaderProgram;
   return self;
 }
@@ -32,7 +31,7 @@ void Shader_setMat4f(Shader *self, const char *name, mat4 mat) {
                      (float *)mat);
 }
 
-char *loadSourceFile(const char *path) {
+char *load_file_from_path(const char *path) {
   char *source = NULL;
   FILE *fp = fopen(path, "r");
   if (fp != NULL) {

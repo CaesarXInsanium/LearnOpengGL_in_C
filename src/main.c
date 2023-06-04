@@ -23,11 +23,11 @@ int main(void) {
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   Texture texture_01 = newTexture("images/alterjoan.png", 1);
-
   Texture texture_02 = newTexture("images/rem.png", 0);
-  // Destroy data from image
 
-  Shader *shader = Shader_new("shaders/vertex.glsl", "shaders/frag.glsl");
+  char *vertex_source = load_file_from_path("shaders/vertex.glsl");
+  char *frag_source = load_file_from_path("shaders/frag.glsl");
+  Shader *shader = Shader_new(vertex_source, frag_source);
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   Geometry *cube_geometry =

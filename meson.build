@@ -21,7 +21,8 @@ SRC = [
   'src/gl.c',
   'src/vertex.c',
   'src/gl.c',
-  'src/graphics/vertex_entry.c'
+  'src/graphics/vertex_entry.c',
+  'src/graphics/geometry.c',
 ]
 
 INC = [

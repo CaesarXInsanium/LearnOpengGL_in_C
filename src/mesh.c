@@ -1,6 +1,8 @@
 #include "mesh.h"
 #include "glad/gl.h"
-#include "vertex.h"
+#include "graphics/vertex.h"
+#include "graphics/geometry.h"
+
 #include <GLFW/glfw3.h>
 #include <stdlib.h>
 

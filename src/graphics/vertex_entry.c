@@ -1,6 +1,6 @@
 #include "glad/gl.h"
 #include "graphics/vertex_desc.h"
-#include "vertex.h"
+#include "graphics/vertex.h"
 #include <stdlib.h>
 
 size_t gl_type_size(GLenum type){
@@ -35,3 +35,4 @@ void vertex_describe_gl(GLuint vao, VertexDescEntry entries[], size_t count){
     offset = offset + (entry.value_count * gl_type_size(entry.type));
   }
 }
+
