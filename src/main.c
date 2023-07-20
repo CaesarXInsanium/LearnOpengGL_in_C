@@ -28,6 +28,7 @@ int main(void) {
 
   char *vertex_source = load_file_from_path("shaders/vertex.glsl");
   char *frag_source = load_file_from_path("shaders/frag.glsl");
+
   Shader *shader = Shader_new(vertex_source, frag_source);
 
   free(vertex_source);
@@ -61,8 +62,8 @@ int main(void) {
     glm_mat4_identity(model);
     vec3 model_axis = {0.5, 1.0, 0.0};
     double time = glfwGetTime();
-    float time_float = glm_radians((float)time);
-    glm_rotate(model, time_float, model_axis);
+    float delta = glm_radians((float)time * 50.0);
+    glm_rotate(model, delta, model_axis);
 
     // view
     mat4 view;
@@ -87,7 +88,6 @@ int main(void) {
   Mesh_destroy(mesh);
   Shader_destroy(shader);
   destroyWindow(window);
-
 
   return EXIT_SUCCESS;
 }

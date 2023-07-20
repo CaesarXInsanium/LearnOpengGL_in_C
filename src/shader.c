@@ -1,5 +1,5 @@
-#include "shader.h"
 #include "glad/gl.h"
+#include "shader.h"
 #include <GLFW/glfw3.h>
 #include <assert.h>
 #include <cglm/mat4.h>
