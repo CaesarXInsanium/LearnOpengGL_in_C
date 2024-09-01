@@ -5,30 +5,30 @@
 #include <cglm/mat4.h>
 #include <stdio.h>
 
-Shader *Shader_new(char *vertex_source, char *frag_source) {
-  Shader *self = (Shader *)malloc(sizeof(Shader));
+ShaderProgram *Shader_new(char *vertex_source, char *frag_source) {
+  ShaderProgram *self = (ShaderProgram *)malloc(sizeof(ShaderProgram));
 
   GLuint shader_program =
       shader_program_from_chararray(vertex_source, frag_source);
   self->ID = shader_program;
   return self;
 }
-int Shader_destroy(Shader *self) {
+int Shader_destroy(ShaderProgram *self) {
   glDeleteProgram(self->ID);
   free(self);
   return EXIT_SUCCESS;
 }
 
-void Shader_use(Shader *self) { glUseProgram(self->ID); }
+void Shader_use(ShaderProgram *self) { glUseProgram(self->ID); }
 
-void Shader_setFloat(Shader *self, const char *name, GLfloat value) {
+void Shader_setFloat(ShaderProgram *self, const char *name, GLfloat value) {
   glUniform1f(glGetUniformLocation(self->ID, name), value);
 }
-void Shader_setInt(Shader *self, const char *name, GLint value) {
+void Shader_setInt(ShaderProgram *self, const char *name, GLint value) {
   glUniform1i(glGetUniformLocation(self->ID, name), value);
 }
 
-void Shader_setMat4f(Shader *self, const char *name, mat4 mat) {
+void Shader_setMat4f(ShaderProgram *self, const char *name, mat4 mat) {
   glUniformMatrix4fv(glGetUniformLocation(self->ID, name), 1, GL_FALSE,
                      (float *)mat);
 }

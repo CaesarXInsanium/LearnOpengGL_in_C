@@ -29,7 +29,7 @@ int main(void) {
   char *vertex_source = load_file_from_path("shaders/vertex.glsl");
   char *frag_source = load_file_from_path("shaders/frag.glsl");
 
-  Shader *shader = Shader_new(vertex_source, frag_source);
+  ShaderProgram *shader = Shader_new(vertex_source, frag_source);
 
   free(vertex_source);
   free(frag_source);
