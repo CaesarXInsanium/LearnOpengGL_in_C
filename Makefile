@@ -1,5 +1,6 @@
 BUILD_DIR=build
 BIN=$(BUILD_DIR)/learn-gl
+SOURCES=$(shell fd --extension c --extension h)
 
 
 all: $(BUILD_DIR)
@@ -16,3 +17,6 @@ debug: all
 
 clean:
 	rm -rf $(BUILD_DIR)
+
+tags: $(SOURCES)
+	fd --extension c --extension h . | ctags -

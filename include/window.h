@@ -10,14 +10,14 @@ typedef struct Window_ {
 } Window;
 
 // Init Window
-Window *newWindow(size_t w, size_t h, char *name);
+Window *create_window(size_t w, size_t h, char *name);
 // Deallocates interresources before deallocate self
-int destroyWindow(Window *self);
+int window_destroy(Window *self);
 
-int focusWindow(Window *self);
+int focus_window(Window *self);
 
-int Window_handleEvents(Window *self);
+int window_handle_events(Window *self);
 
-int Window_shouldClose(Window *self);
+int window_should_close(Window *self);
 
 #endif

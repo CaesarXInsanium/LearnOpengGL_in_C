@@ -1,4 +1,5 @@
 #include "window.h"
+#include "glad/gl.h"
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +10,7 @@ static Window *current_focused_window;
 void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 void processInput(GLFWwindow *window);
 
-Window *newWindow(size_t w, size_t h, char *name) {
+Window *create_window(size_t w, size_t h, char *name) {
   Window *self = (Window *)malloc(sizeof(Window));
   memset(self, 0, sizeof(Window));
   if (!glfwInit()) {
@@ -17,12 +18,21 @@ Window *newWindow(size_t w, size_t h, char *name) {
     exit(EXIT_FAILURE);
   }
 
+
   glfwWindowHint(GLFW_REFRESH_RATE, 60);
   glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
 
   self->window_ptr = glfwCreateWindow((int)w, (int)h, name, NULL, NULL);
+
+  // OpenGL features
+  glfwMakeContextCurrent(self->window_ptr); // neccesary to use below functions
+  gladLoadGL(glfwGetProcAddress);
+  glEnable(GL_BLEND);
+  glEnable(GL_DEPTH_TEST);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   self->width = w;
   self->height = h;
 
@@ -30,25 +40,25 @@ Window *newWindow(size_t w, size_t h, char *name) {
   return self;
 }
 
-int destroyWindow(Window *self) {
+int window_destroy(Window *self) {
   glfwDestroyWindow(self->window_ptr);
   glfwTerminate();
   free(self);
   return EXIT_SUCCESS;
 }
 
-int focusWindow(Window *self) {
+int focus_window(Window *self) {
   current_focused_window = self;
   glfwMakeContextCurrent(self->window_ptr);
   return EXIT_SUCCESS;
 }
-int Window_handleEvents(Window *self) {
+int window_handle_events(Window *self) {
   processInput(self->window_ptr);
   glfwSwapBuffers(self->window_ptr);
   glfwPollEvents();
   return EXIT_SUCCESS;
 }
-int Window_shouldClose(Window *self) {
+int window_should_close(Window *self) {
   return glfwWindowShouldClose(self->window_ptr);
 }
 

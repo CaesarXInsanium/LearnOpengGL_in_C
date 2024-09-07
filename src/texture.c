@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Texture newTexture(const char *filepath, GLuint index) {
+Texture create_texture(const char *filepath, GLuint index) {
   FILE *fp = fopen(filepath, "r");
 
   png_structp png_ptr =
@@ -102,4 +102,4 @@ Texture newTexture(const char *filepath, GLuint index) {
   return result;
 }
 
-void useTexture(Texture tex) { glBindTexture(GL_TEXTURE_2D, tex.id); }
+void activate_texture(Texture tex) { glBindTexture(GL_TEXTURE_2D, tex.id); }

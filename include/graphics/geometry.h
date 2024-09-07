@@ -12,9 +12,9 @@ typedef struct {
   GLuint *indices;
 } Geometry;
 
-Geometry *Geometry_fromGLfloatArray(GLuint vertex_count,
+Geometry *geometry_from_array(GLuint vertex_count,
                                     const GLfloat *vertices, GLuint index_count,
                                     const GLuint *indices);
 
-void Geometry_destroy(Geometry *self);
+void geometry_destroy(Geometry *self);
 #endif

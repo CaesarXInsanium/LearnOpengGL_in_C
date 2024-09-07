@@ -6,6 +6,6 @@ typedef struct {
   GLuint index;
 } Texture;
 
-Texture newTexture(const char*filepath, GLuint index);
+Texture create_texture(const char*filepath, GLuint index);
 
-void useTexture(Texture tex);
+void activate_texture(Texture tex);

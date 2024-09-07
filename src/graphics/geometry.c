@@ -5,7 +5,7 @@
 #include <stdlib.h>
 
 // must pass an array of GLfloats that are declare on the stack
-Geometry *Geometry_fromGLfloatArray(GLuint vertex_count,
+Geometry *geometry_from_array(GLuint vertex_count,
                                     const GLfloat vertices[],
                                     GLuint index_count,
                                     const GLuint indices[]) {
@@ -25,7 +25,7 @@ Geometry *Geometry_fromGLfloatArray(GLuint vertex_count,
   return result;
 }
 
-void Geometry_destroy(Geometry *self) {
+void geometry_destroy(Geometry *self) {
   if (self->heap_allocated) {
     free(self->indices);
     free(self->vertices);

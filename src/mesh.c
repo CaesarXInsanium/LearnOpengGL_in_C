@@ -7,7 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-Mesh *Mesh_fromGeometry(Geometry *geo) {
+Mesh *mesh_from_geometry(Geometry *geo) {
   Mesh *result = calloc(1, sizeof(Mesh));
   GLuint vbo, ebo, vao;
   glGenVertexArrays(1, &vao);
@@ -44,7 +44,7 @@ Mesh *Mesh_fromGeometry(Geometry *geo) {
   return result;
 }
 
-int Mesh_draw(Mesh *mesh) {
+int mesh_render(Mesh *mesh) {
 
   glBindVertexArray(mesh->vao); // seeing as we only have a single VAO there's
                                 // no need to bind it every time, but we'll do
@@ -54,7 +54,7 @@ int Mesh_draw(Mesh *mesh) {
   // glDrawArrays(GL_TRIANGLES, 0, 36);
   return 0;
 }
-int Mesh_destroy(Mesh *mesh) {
+int mesh_destroy(Mesh *mesh) {
   glDeleteBuffers(1, &mesh->vbo);
   glDeleteBuffers(1, &mesh->ebo);
   glDeleteVertexArrays(1, &mesh->vao);

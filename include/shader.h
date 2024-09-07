@@ -13,17 +13,17 @@ typedef struct Shader_ {
 } ShaderProgram;
 
 // will consume the cstrings and free them
-ShaderProgram *Shader_new(char *vertex_source, char *frag_source);
+ShaderProgram *shader_program_new(char *vertex_source, char *frag_source);
 
-int Shader_destroy(ShaderProgram *self);
+int shader_destroy(ShaderProgram *self);
 
-void Shader_use(ShaderProgram *self);
+void shader_enable(ShaderProgram *self);
 
-void Shader_setBool(ShaderProgram *self, const char *name, bool value);
-void Shader_setFloat(ShaderProgram *self, const char *name, GLfloat value);
-void Shader_setInt(ShaderProgram *self, const char *name, GLint value);
+void shader_set_bool(ShaderProgram *self, const char *name, bool value);
+void shader_set_float(ShaderProgram *self, const char *name, GLfloat value);
+void shader_set_int(ShaderProgram *self, const char *name, GLint value);
 
-void Shader_setMat4f(ShaderProgram *self, const char *name, mat4 mat);
+void shader_set_mat4f(ShaderProgram *self, const char *name, mat4 mat);
 
 // stolen from:
 // https://stackoverflow.com/questions/2029103/correct-way-to-read-a-text-file-into-a-buffer-in-c

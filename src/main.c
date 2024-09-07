@@ -15,47 +15,42 @@
 #include <stdlib.h>
 
 int main(void) {
-  Window *window = newWindow(800, 800, "GLAD!");
-  focusWindow(window);
-  gladLoadGL(glfwGetProcAddress);
+  Window *window = create_window(800, 800, "GLAD!");
+  focus_window(window);
 
-  glEnable(GL_BLEND);
-  glEnable(GL_DEPTH_TEST);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-  Texture texture_01 = newTexture("images/alterjoan.png", 1);
-  Texture texture_02 = newTexture("images/rem.png", 0);
+  Texture texture_01 = create_texture("images/alterjoan.png", 1);
+  Texture texture_02 = create_texture("images/rem.png", 0);
 
   char *vertex_source = load_file_from_path("shaders/vertex.glsl");
   char *frag_source = load_file_from_path("shaders/frag.glsl");
 
-  ShaderProgram *shader = Shader_new(vertex_source, frag_source);
+  ShaderProgram *shader = shader_program_new(vertex_source, frag_source);
 
   free(vertex_source);
   free(frag_source);
 
   // set up vertex data (and buffer(s)) and configure vertex attributes
   Geometry *cube_geometry =
-      Geometry_fromGLfloatArray(36, CUBE_VERTICES, 0, NULL);
-  Mesh *mesh = Mesh_fromGeometry(cube_geometry);
-  Geometry_destroy(cube_geometry);
+      geometry_from_array(36, CUBE_VERTICES, 0, NULL);
+  Mesh *mesh = mesh_from_geometry(cube_geometry);
+  geometry_destroy(cube_geometry);
 
   // begin declaring uniforms
-  Shader_use(shader); // but first declare that are using this shader
+  shader_enable(shader); // but first declare that are using this shader
 
-  Shader_setInt(shader, "ourTexture00", 0);
-  Shader_setInt(shader, "ourTexture01", 1);
+  shader_set_int(shader, "ourTexture00", 0);
+  shader_set_int(shader, "ourTexture01", 1);
 
-  while (!Window_shouldClose(window)) {
-    Window_handleEvents(window);
+  while (!window_should_close(window)) {
+    window_handle_events(window);
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glActiveTexture(GL_TEXTURE0);
-    useTexture(texture_01);
+    activate_texture(texture_01);
 
     glActiveTexture(GL_TEXTURE1);
-    useTexture(texture_02);
+    activate_texture(texture_02);
 
     // model
     mat4 model;
@@ -77,17 +72,17 @@ int main(void) {
     GLfloat aspect_ratio = ((GLfloat)window->width / (GLfloat)window->height);
     glm_perspective(glm_radians(45.0), aspect_ratio, 0.1, 100.0, projection);
 
-    Shader_use(shader);
-    Shader_setMat4f(shader, "model", model);
-    Shader_setMat4f(shader, "view", view);
-    Shader_setMat4f(shader, "projection", projection);
+    shader_enable(shader);
+    shader_set_mat4f(shader, "model", model);
+    shader_set_mat4f(shader, "view", view);
+    shader_set_mat4f(shader, "projection", projection);
 
-    Mesh_draw(mesh);
+    mesh_render(mesh);
   }
 
-  Mesh_destroy(mesh);
-  Shader_destroy(shader);
-  destroyWindow(window);
+  mesh_destroy(mesh);
+  shader_destroy(shader);
+  window_destroy(window);
 
   return EXIT_SUCCESS;
 }
