@@ -33,7 +33,7 @@ Texture create_texture(const char *filepath, GLuint index) {
   png_bytepp row_pointers = png_get_rows(png_ptr, info_ptr);
 
   // Align bytes as OpenGL expects them.
-  for (unsigned int i = 0; i < height; i++) {
+  for (uint32_t i = 0; i < height; i++) {
     memcpy(data + (row_bytes * i), row_pointers[i], row_bytes);
   }
 

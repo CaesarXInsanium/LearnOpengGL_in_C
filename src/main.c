@@ -15,7 +15,9 @@
 #include <stdlib.h>
 
 int main(void) {
-  Window *window = create_window(800, 800, "GLAD!");
+  Window *window = malloc(sizeof(Window));
+  init_window(800, 800, "GLAD!", window);
+
   focus_window(window);
 
   Texture texture_01 = create_texture("images/alterjoan.png", 1);
@@ -32,7 +34,7 @@ int main(void) {
   // set up vertex data (and buffer(s)) and configure vertex attributes
   Geometry *cube_geometry =
       geometry_from_array(36, CUBE_VERTICES, 0, NULL);
-  Mesh *mesh = mesh_from_geometry(cube_geometry);
+  Mesh *cube_mesh= mesh_from_geometry(cube_geometry);
   geometry_destroy(cube_geometry);
 
   // begin declaring uniforms
@@ -77,10 +79,10 @@ int main(void) {
     shader_set_mat4f(shader, "view", view);
     shader_set_mat4f(shader, "projection", projection);
 
-    mesh_render(mesh);
+    mesh_render(cube_mesh);
   }
 
-  mesh_destroy(mesh);
+  mesh_destroy(cube_mesh);
   shader_destroy(shader);
   window_destroy(window);
 

@@ -40,6 +40,32 @@ Window *create_window(size_t w, size_t h, char *name) {
   return self;
 }
 
+void init_window(int w, int h, char *name, Window* win) {
+  if (!glfwInit()) {
+    fprintf(stderr, "Failed to Init Window");
+    exit(EXIT_FAILURE);
+  }
+
+  glfwWindowHint(GLFW_REFRESH_RATE, 60);
+  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+
+  win->window_ptr = glfwCreateWindow(w, h, name, NULL, NULL);
+
+  // OpenGL features
+  glfwMakeContextCurrent(win->window_ptr); // neccesary to use below functions
+  gladLoadGL(glfwGetProcAddress);
+  glEnable(GL_BLEND);
+  glEnable(GL_DEPTH_TEST);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  win->width = w;
+  win->height = h;
+
+  glfwSetFramebufferSizeCallback(win->window_ptr, framebuffer_size_callback);
+}
+
 int window_destroy(Window *self) {
   glfwDestroyWindow(self->window_ptr);
   glfwTerminate();

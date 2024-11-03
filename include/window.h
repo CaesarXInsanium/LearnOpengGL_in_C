@@ -11,6 +11,9 @@ typedef struct Window_ {
 
 // Init Window
 Window *create_window(size_t w, size_t h, char *name);
+
+// assumes that memory is allocated for the memory object.
+void init_window(int w, int h, char* window_name, Window *win);
 // Deallocates interresources before deallocate self
 int window_destroy(Window *self);
 

@@ -5,6 +5,9 @@
 #include "graphics/vertex.h"
 #include <GLFW/glfw3.h>
 
+// this is an abstract thing
+typedef GLuint Buffer;
+
 // This struct represents an individual thing that can be draw by my engine. A
 // model or a scene or a skybox or something. All the data has already been
 // uploaded to GPU
