@@ -14,12 +14,12 @@ project(
 
 SRC = [
   'src/main.c',
-  'src/window.c',
   'src/shader.c',
   'src/mesh.c',
   'src/texture.c',
   'src/vertex.c',
   'src/gl.c',
+  'src/app.c',
   'src/graphics/vertex_entry.c',
   'src/graphics/geometry.c',
 ]

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-Texture create_texture(const char *filepath, GLuint index) {
+Texture texture_create(const char *filepath, GLuint index) {
   FILE *fp = fopen(filepath, "r");
 
   png_structp png_ptr =

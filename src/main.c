@@ -1,27 +1,38 @@
-#include "glad/gl.h"
+// bullshit code the CXI writes
+#include "app.h"
 #include "graphics/geometry.h"
 #include "mesh.h"
 #include "shader.h"
 #include "texture.h"
 #include "uniform.h"
-#include "window.h"
+#include "app.h"
+
+// external libraries
 #include <GLFW/glfw3.h>
 #include <cglm/cam.h>
 #include <cglm/cglm.h>
 #include <cglm/mat4.h>
 #include <cglm/types.h>
+
+// standard library
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 int main(void) {
-  Window *window = malloc(sizeof(Window));
-  init_window(800, 800, "GLAD!", window);
+  struct ApplicationSettings settings = {
+    .width = 800,
+    .height = 600,
+    .name = "GLAD!"
+  };
 
-  focus_window(window);
+  AppState app;
+  app_create(&app, settings);
+  // basically calls the glfwFocusWindow
+  app_show_frame(&app);
 
-  Texture texture_01 = create_texture("images/alterjoan.png", 1);
-  Texture texture_02 = create_texture("images/rem.png", 0);
+  Texture texture_01 = texture_create("images/alterjoan.png", 1);
+  Texture texture_02 = texture_create("images/rem.png", 0);
 
   char *vertex_source = load_file_from_path("shaders/vertex.glsl");
   char *frag_source = load_file_from_path("shaders/frag.glsl");
@@ -43,8 +54,9 @@ int main(void) {
   shader_set_int(shader, "ourTexture00", 0);
   shader_set_int(shader, "ourTexture01", 1);
 
-  while (!window_should_close(window)) {
-    window_handle_events(window);
+  while (!app_should_close(&app)) {
+    app_handle_events(&app);
+    // TODO: move this to app_draw_frame
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -71,9 +83,10 @@ int main(void) {
     // projection
     mat4 projection;
     glm_mat4_identity(projection);
-    GLfloat aspect_ratio = ((GLfloat)window->width / (GLfloat)window->height);
+    GLfloat aspect_ratio = ((GLfloat)app.window_width / (GLfloat)app.window_height);
     glm_perspective(glm_radians(45.0), aspect_ratio, 0.1, 100.0, projection);
 
+    // move to apply_uniform_data
     shader_enable(shader);
     shader_set_mat4f(shader, "model", model);
     shader_set_mat4f(shader, "view", view);
@@ -84,7 +97,7 @@ int main(void) {
 
   mesh_destroy(cube_mesh);
   shader_destroy(shader);
-  window_destroy(window);
+  app_destroy(&app);
 
   return EXIT_SUCCESS;
 }
