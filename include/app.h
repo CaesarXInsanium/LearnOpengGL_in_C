@@ -9,6 +9,7 @@
 #include <cglm/types.h>
 #include "glad/gl.h"
 #include <GLFW/glfw3.h>
+#include "chunk.h"
 
 struct UniformData{
   mat4 model;
@@ -32,8 +33,13 @@ struct AppState{
   int window_width;
   int window_height;
   GLFWwindow *window;
-  GLuint active_textures;
-  int active_texture_count;
+
+  GLuint voxel_mesh_vao;
+  GLuint *voxel_mesh_vbos;
+  int voxel_mesh_count;
+
+  int loaded_chunk_count;
+  VoxelChunkData loaded_chunks;
 };
 
 typedef struct AppState AppState;

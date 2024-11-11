@@ -31,6 +31,16 @@ int main(void) {
   // basically calls the glfwFocusWindow
   app_show_frame(&app);
 
+  VoxelChunkData first_chunk;
+  struct VoxelGenerationConfig first_chunk_config = {
+    .flatland = false,
+    .amplified = false,
+    .random = false,
+  };
+  initialize_voxel_chunk(&first_chunk);
+  generate_voxel_terrain(&first_chunk, 0,  first_chunk_config);
+  VoxelMesh first_chunk_mesh;
+  generate_voxel_mesh(&first_chunk, &first_chunk_mesh);
   Texture texture_01 = texture_create("images/alterjoan.png", 1);
   Texture texture_02 = texture_create("images/rem.png", 0);
 
@@ -94,7 +104,8 @@ int main(void) {
 
     mesh_render(cube_mesh);
   }
-
+  destroy_voxel_chunk(&first_chunk);
+  voxel_mesh_destroy(&first_chunk_mesh);
   mesh_destroy(cube_mesh);
   shader_destroy(shader);
   app_destroy(&app);

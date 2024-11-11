@@ -2,6 +2,8 @@
 #define CHUNK_H
 
 #include <stdint.h>
+#include <stddef.h>
+#include <stdbool.h>
 
 #define CHUNK_SIZE 16
 
@@ -29,15 +31,15 @@ typedef struct {
   uint32_t chunk_size;
   // size in bytes of *blocks pointer
   size_t allocated_size;
-  VoxelBlock *blocks
+  VoxelBlock *blocks;
 } VoxelChunkData;
 
 typedef struct {
-  GLuint vbo;
+  uint32_t vbo;
   int vertex_count;
-  GLuint ebo;
+  uint32_t ebo;
   int index_count;
-} VoxelMeshID;
+} VoxelMesh;
 
 // ready a chunk struct to be usabled, allocate memory iin gpu
 void initialize_voxel_chunk(VoxelChunkData *data);
@@ -49,12 +51,92 @@ void destroy_voxel_chunk(VoxelChunkData *data);
 void deep_copy_voxel_chunk(VoxelChunkData *data);
 
 // shallow copy is simply an assigning to a new struct in stack memory
-void shallow_copy_voxel_chunj
+void shallow_copy_voxel_chunk(VoxelChunkData *data);
 
 // by default should generate a flatworld
-// TODO: move out of file
-void generate_voxel_terrain(VoxelChunkData *data, uint32_t seed, VoxelGenerationConfig config);
+// TODO: move out of file, generation.h
+void generate_voxel_terrain(VoxelChunkData *data, uint32_t seed, struct VoxelGenerationConfig config);
 
-void generate_voxel_mesh(VoxelChunkData *data, VoxelMeshIDID *mesh_result);
+void generate_voxel_mesh(VoxelChunkData *data, VoxelMesh *mesh_result);
+void voxel_mesh_destroy(VoxelMesh *mesh);
 
+static const float VOXEL_VERTICES[] = {
+    -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.5f,  -0.5f,
+    -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,  0.5f,  -0.5f, 0.0f,
+    0.0f,  0.0f,  1.0f,  1.0f,  0.5f,  0.5f,  -0.5f, 0.0f,  0.0f,  0.0f,
+    1.0f,  1.0f,  -0.5f, 0.5f,  -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+
+    -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,  0.5f,  -0.5f,
+    0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,  0.5f,  0.5f,  0.0f,
+    0.0f,  0.0f,  1.0f,  1.0f,  0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  0.0f,
+    1.0f,  1.0f,  -0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+    -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+
+    -0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  -0.5f, 0.5f,
+    -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  -0.5f, -0.5f, -0.5f, 0.0f,
+    0.0f,  0.0f,  0.0f,  1.0f,  -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,
+    0.0f,  1.0f,  -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+    0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,  0.5f,  0.5f,
+    -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,  -0.5f, -0.5f, 0.0f,
+    0.0f,  0.0f,  0.0f,  1.0f,  0.5f,  -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,
+    0.0f,  1.0f,  0.5f,  -0.5f, 0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+    0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  1.0f,  0.0f,
+
+    -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.5f,  -0.5f,
+    -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,  -0.5f, 0.5f,  0.0f,
+    0.0f,  0.0f,  1.0f,  0.0f,  0.5f,  -0.5f, 0.5f,  0.0f,  0.0f,  0.0f,
+    1.0f,  0.0f,  -0.5f, -0.5f, 0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f, -0.5f, -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+
+    -0.5f, 0.5f,  -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  1.0f,  0.5f,  0.5f,
+    -0.5f, 0.0f,  0.0f,  0.0f,  1.0f,  1.0f,  0.5f,  0.5f,  0.5f,  0.0f,
+    0.0f,  0.0f,  1.0f,  0.0f,  0.5f,  0.5f,  0.5f,  0.0f,  0.0f,  0.0f,
+    1.0f,  0.0f,  -0.5f, 0.5f,  0.5f,  0.0f,  0.0f,  0.0f,  0.0f,  0.0f,
+    -0.5f, 0.5f,  -0.5f, 0.0f,  0.0f,  0.0f,  0.0f,  1.0f};
+const float vertices[] = {
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+    };
 #endif

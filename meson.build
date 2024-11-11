@@ -20,6 +20,7 @@ SRC = [
   'src/vertex.c',
   'src/gl.c',
   'src/app.c',
+  'src/chunk.c',
   'src/graphics/vertex_entry.c',
   'src/graphics/geometry.c',
 ]

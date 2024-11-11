@@ -1,8 +1,10 @@
 
 #ifndef VERTEX_H
 #define VERTEX_H
+
 #include "glad/gl.h"
 #include <stdbool.h>
+
 typedef struct {
   GLfloat x;
   GLfloat y;
